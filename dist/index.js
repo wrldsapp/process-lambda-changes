@@ -4344,14 +4344,6 @@ exports.issueCommand = issueCommand;
 
 /***/ }),
 
-/***/ 552:
-/***/ (function(module) {
-
-module.exports = eval("require")("../lambda.js");
-
-
-/***/ }),
-
 /***/ 605:
 /***/ (function(module) {
 
@@ -4767,7 +4759,7 @@ const repo = payload.repository;
 const owner = repo.owner.name;
 
 const octokit = github.getOctokit(core.getInput("token"));
-const lambda = __webpack_require__(552);
+
 
 /**
  * Fetches a list of functions from the repo's REST
@@ -4848,31 +4840,12 @@ async function processLambdaChanges(beforeSha, afterSha) {
 }
 
 
-
-async function deployChanges(updates) {
-  console.log("Deploy changes called!");
-  return new Promise(async function(resolve, reject) {
-    console.log('Deploying changes', updates);
-    let deleted = await lambda.remove(updates.deleted);
-    let created = await lambda.create(updates.created);
-    await lambda.update(updates.updated);
-    console.log('Finished deploying changes.');
-    fs.writeFileSync(`${process.env.HOME}/newFunctions.json`,
-    toJSON(Array.from(created)), 'utf-8');
-    fs.writeFileSync(`${process.env.HOME}/deletedFunctions.json`,
-    toJSON(Array.from(deleted)), 'utf-8');
-    resolve;
-  });
-}
-
-
-
 // ----------------- SCRIPT --------------
 try {
   processLambdaChanges(payload.before, payload.after)
   .then((updates) => {
     console.log('updates', updates);
-    deployChanges(updates);
+    core.setOutput('Updates', updates);
   });
 } catch (error) {
   core.setFailed(error.message);
