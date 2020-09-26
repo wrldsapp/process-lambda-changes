@@ -1,0 +1,12 @@
+name: 'Process Lambda Changes'
+description: 'Detects and logs changes in a Lambda functions monorepo.'
+inputs:
+  token:
+    desription: 'The github token for the repo'
+    required: true
+outputs: 
+  updates:
+    description: 'A json object containing updated, created, and deleted functions.'
+runs:
+  using: 'node12'
+  main: 'dist/index.js'
