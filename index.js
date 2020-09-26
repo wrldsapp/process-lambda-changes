@@ -95,7 +95,7 @@ try {
   processLambdaChanges(payload.before, payload.after)
   .then((updates) => {
     console.log('updates', updates);
-    core.setOutput('Updates', updates);
+    core.setOutput('updates', updates);
   });
 } catch (error) {
   core.setFailed(error.message);
